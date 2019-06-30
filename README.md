@@ -39,4 +39,4 @@ Backend portion of test completed
 ## Testing
 
 1. Open terminal and navigate to the root of this project
-2. Enter `python tests/postcode_distance_test.py`
+2. Enter `python tests/postcode_distance_tests.py`
