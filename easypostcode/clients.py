@@ -5,16 +5,17 @@ class _PostcodesClient:
   _base_url = "https://api.postcodes.io/postcodes"
   
   def get_position_from(self, postcode):
+      print("Real client fired")
       """Get long and latitude as a tuple from a postcode string"""
       response = requests.get(self._base_url + "/{}".format(postcode))
       if response.status_code == 200:
           decoded_result = response.json()['result']
-          print(decoded_result)
           return (decoded_result['longitude'], decoded_result['latitude'])
       else:
           raise Exception("Bad response from postcode.io, status:", response.status_code)
 
   def get_bulk_positions_from_array_of(self, postcodes):
+      print("Real client fired")
       """Get long and lat tuples as a list from a list of postcodes"""
       response = requests.post(self._base_url, data = {'postcodes': postcodes})
       if response.status_code == 200:
@@ -35,4 +36,18 @@ class _PostcodesClient:
           raise Exception("Bad response from postcode.io, status:", response.status_code)
 
 
+class _MockPostcodesClient:
+  
+    def get_position_from(self, postcode):
+        """Get long and latitude as a tuple from a postcode string"""
+        return (3,3)
+
+    def get_bulk_positions_from_array_of(self, postcodes):
+        returnList = []
+        for index in range(0, len(postcodes)):
+            returnList.append((index, index))
+        return returnList
+
+
 postcodesClient = _PostcodesClient()
+mockPostcodesClient = _MockPostcodesClient()

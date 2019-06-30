@@ -7,11 +7,11 @@ from easypostcode.clients import postcodesClient
 from easypostcode.longlats import distance_between
 
 app = Flask(__name__)
+client = postcodesClient
 stores_path = join(dirname(realpath(__file__)), 'static/stores.json')
 postcodes = None
 store_names = None
 locations = None
-
 
 @app.route('/view_stores')
 def get_stores_view():
@@ -28,7 +28,7 @@ def get_stores_view():
         message = message)
 
 
-@app.route('/get_stores', methods = ['GET'])
+@app.route('/view_nearby_stores', methods = ['GET'])
 def _get_radial_stores():
     radial_postcode = request.args.get('postcode')
     radius = float(request.args.get('radius'))
@@ -58,7 +58,7 @@ def find_radial_stores(postcode, radius):
     Returns:
     good_locations_list -- List of tuples contaning name, postcode and location tuple
     """
-    start_location = postcodesClient.get_position_from(postcode)
+    start_location = client.get_position_from(postcode)
     good_locations = []
     for index, end_location in enumerate(locations):
         if (end_location is not None and 
@@ -71,17 +71,19 @@ def find_radial_stores(postcode, radius):
     return good_locations
 
 
+# Generally confused who's responsible for this code
 with open(stores_path) as storesRaw:
     stores = json.load(storesRaw)
     store_names = list(
         map(
-          lambda postcodeDict: postcodeDict['name'], 
-          stores))
+        lambda postcodeDict: postcodeDict['name'], 
+        stores))
     postcodes = list(
         map(
-          lambda postcodeDict: postcodeDict['postcode'], 
-          stores))
-    locations = postcodesClient.get_bulk_positions_from_array_of(postcodes)
+        lambda postcodeDict: postcodeDict['postcode'], 
+        stores))
+    locations = client.get_bulk_positions_from_array_of(postcodes)
 
+# Launch flask app with data from stores, if we're main
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=4000, debug=True)
+    app.run(host='0.0.0.0', port=4000)
