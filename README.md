@@ -17,4 +17,8 @@ Backend portion of test completed
 
 ## Running
 
+`$ python -m easypostcode.postcode_distance`
+
 ## Testing
+
+`$ python tests/postcode_distance_test.py`

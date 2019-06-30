@@ -2,7 +2,7 @@ import os
 import tempfile
 import unittest
 
-from app import postcode_distance
+from context import postcode_distance
 
 class PostcodeDistanceTest(unittest.TestCase):
     # function to set up testing connection

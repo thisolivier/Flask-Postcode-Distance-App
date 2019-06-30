@@ -1,9 +1,13 @@
 import json
+from os.path import join, dirname, realpath
+
 from flask import Flask, render_template, request
-from clients import postcodesClient
-from longlats import distance_between
+
+from easypostcode.clients import postcodesClient
+from easypostcode.longlats import distance_between
 
 app = Flask(__name__)
+stores_path = join(dirname(realpath(__file__)), 'static/stores.json')
 postcodes = None
 store_names = None
 locations = None
@@ -67,7 +71,7 @@ def find_radial_stores(postcode, radius):
     return good_locations
 
 
-with open('./static/stores.json') as storesRaw:
+with open(stores_path) as storesRaw:
     stores = json.load(storesRaw)
     store_names = list(
         map(
