@@ -1,0 +1,35 @@
+body {
+    font-family: Helvetica, sans-serif;
+}
+
+.myGif {
+    position: absolute;
+    top: 0;
+    right: 0;
+    max-width: 28%;
+    height: auto;
+}
+
+table {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+}
+
+th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: darkorange;
+    color: white;
+}
+
+td,
+th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+

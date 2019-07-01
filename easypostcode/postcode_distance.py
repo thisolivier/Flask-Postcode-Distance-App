@@ -4,7 +4,7 @@ from os.path import join, dirname, realpath
 from flask import Flask, render_template, request
 
 from easypostcode.clients import postcodesClient
-from easypostcode.longlats import distance_between
+from easypostcode.longlats_helper import distance_between
 
 app = Flask(__name__)
 client = postcodesClient
@@ -30,18 +30,24 @@ def get_stores_view():
 
 @app.route('/view_nearby_stores', methods = ['GET'])
 def _get_radial_stores():
-    radial_postcode = request.args.get('postcode')
-    radius = float(request.args.get('radius'))
-    locations = find_radial_stores(
-        postcode = radial_postcode, 
-        radius = radius)
-    data = sorted(
-        locations, 
-        key= lambda locationTuple: locationTuple[2][1], 
-        reverse = True)
-    message = "Within {}km of the postcode {}, arranged North to South".format(
-        radius, 
-        radial_postcode)
+    data = [[],[],[]]
+    # Check arguments
+    if 'postcode' in request.args and 'radius' in request.args:
+        radial_postcode = request.args.get('postcode')
+        radius = request.args.get('radius')
+        try:
+            radius = float(request.args.get('radius'))
+            # Get locations
+            data = find_radial_stores(
+                postcode = radial_postcode, 
+                radius = radius)
+            # Prepare template message
+            message = "Within {}km of the postcode {}, \
+                arranged North to South".format(radius, radial_postcode)
+        except ValueError:
+            message = "Your radius was not a number, please try again"
+    else:
+        message = "Correct arguments not found, please check your query"
     return render_template(
         'stores.html', 
         storeTableData = data, 
@@ -51,12 +57,9 @@ def _get_radial_stores():
 def find_radial_stores(postcode, radius):
     """Given a postcode and radius, returns stores within that radius
 
-    Keyword Arguments:
-    postcode -- A string matching postcode formatting
-    radius -- A number representing the kilometers from the postcode to search
-
-    Returns:
-    good_locations_list -- List of tuples contaning name, postcode and location tuple
+    - param - postcode -- A string matching postcode formatting
+    - param - radius -- A number of kilometers from the postcode to search
+    - return -- List of tuples contaning name, postcode and (long, lat) tuple
     """
     start_location = client.get_position_from(postcode)
     good_locations = []
@@ -68,10 +71,14 @@ def find_radial_stores(postcode, radius):
                 <= radius):
             good_locations.append(
                 (store_names[index], postcodes[index], end_location,))
-    return good_locations
+    return sorted(
+                good_locations, 
+                key= lambda locationTuple: locationTuple[2][1], 
+                reverse = True)
 
 
-# Generally confused who's responsible for this code
+# New to flask, can see moving the static stores to a class, making it easier to test
+# But, not sure how to have remote store which needs initialising and yet keep app stateless
 with open(stores_path) as storesRaw:
     stores = json.load(storesRaw)
     store_names = list(
