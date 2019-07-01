@@ -63,5 +63,4 @@ I'm most proud that it works, I find software that works very pleasing, especial
 I actually think it's a great test. I might ask applicants to 'add an extra feature they think would complete the project', but that seems mean. Getting applicants to describe the apps biggest vulnerability or security risks feels like useful information to get from an applicant too.
 
 
-## *Thanks very much for the challenge, if not an interview then I'd love a code review.*
-## *Olivier*
+## *Thanks very much for the challenge, if not an interview then I'd love a code review, Olivier*
